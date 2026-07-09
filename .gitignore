@@ -1,0 +1,9 @@
+# 운영체제 임시 파일 무시 (윈도우, 맥)
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Vercel 로컬 임시 폴더 무시
+.vercel/
+.vercel
