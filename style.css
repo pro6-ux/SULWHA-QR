@@ -1,0 +1,352 @@
+/* style.css */
+
+/* CSS 변수 설정: 파스텔 핑크 & 몽환적인 테마 */
+:root {
+  --bg-gradient: linear-gradient(135deg, #fde4ec, #f8bbd0, #e1bee7);
+  /* 부드러운 핑크-라일락 배경 */
+  --panel-bg: rgba(255, 255, 255, 0.45);
+  /* 투명한 유리 패널 */
+  --panel-border: rgba(255, 255, 255, 0.6);
+  --text-main: #5d4037;
+  /* 따뜻하고 부드러운 다크 브라운/플럼 */
+  --text-muted: #8d6e63;
+  --primary-color: #f48fb1;
+  --primary-hover: #f06292;
+  --btn-gradient: linear-gradient(135deg, #f48fb1, #f06292);
+  --btn-glow: rgba(240, 98, 146, 0.4);
+  --input-bg: rgba(255, 255, 255, 0.7);
+  --input-border: rgba(244, 143, 177, 0.5);
+  --accent-color: #ce93d8;
+}
+
+/* 기본 초기화 및 폰트 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* 몽환적인 배경 효과 (오로라/빛 번짐) */
+.bg-glow {
+  position: fixed;
+  top: -20%;
+  left: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(248, 187, 208, 0) 70%);
+  filter: blur(60px);
+  z-index: -2;
+  animation: float 15s ease-in-out infinite alternate;
+}
+
+.bg-stars {
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(225, 190, 231, 0.6) 0%, rgba(225, 190, 231, 0) 70%);
+  filter: blur(50px);
+  z-index: -2;
+  animation: float 12s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(30px, 50px) scale(1.1);
+  }
+}
+
+/* 컨테이너 및 헤더 */
+.container {
+  width: 100%;
+  max-width: 540px;
+  padding: 2rem 1.5rem;
+  z-index: 1;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sub-title {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-hover);
+  letter-spacing: 3px;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.main-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #4a148c;
+  /* 헤더 타이틀에 약간의 깊이감을 주는 보라빛 */
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
+}
+
+.desc-text {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+/* 글래스모피즘 패널 (유리 질감) */
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--panel-border);
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(200, 100, 150, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 단계별 화면 전환 */
+.form-step {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.form-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 폼 요소 스타일 */
+.step-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+}
+
+.step-title::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 20px;
+  background: var(--btn-gradient);
+  border-radius: 2px;
+  margin-right: 10px;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="date"] {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+  outline: none;
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 0 3px var(--btn-glow);
+  background: #fff;
+}
+
+input::placeholder {
+  color: #bcaaa4;
+}
+
+/* 성별 선택 버튼 (라디오 커스텀) */
+.gender-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.gender-selector input[type="radio"] {
+  display: none;
+}
+
+.gender-btn {
+  flex: 1;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-muted);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gender-selector input[type="radio"]:checked+.gender-btn {
+  background: var(--btn-gradient);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px var(--btn-glow);
+}
+
+/* 버튼 스타일 */
+.btn {
+  width: 100%;
+  padding: 1.2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1rem;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: var(--btn-gradient);
+  color: white;
+  box-shadow: 0 4px 15px var(--btn-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--btn-glow);
+  filter: brightness(1.05);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--text-main);
+  border: 1px solid var(--panel-border);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* 푸터 */
+.app-footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* 기타 2~4단계에 필요한 기본 스타일 (배경색 등에 맞게 조정) */
+.step-desc {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.element-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 1.5rem;
+}
+
+.element-card {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--input-border);
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.element-card:hover {
+  transform: translateY(-5px);
+  background: #fff;
+  box-shadow: 0 8px 25px rgba(244, 143, 177, 0.2);
+  border-color: var(--primary-color);
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.card-name {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 5px;
+}
+
+.card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 로딩 애니메이션 등 기타 요소들 보정 */
+.magic-circle {
+  width: 80px;
+  height: 80px;
+  border: 3px dashed var(--primary-color);
+  border-radius: 50%;
+  margin: 0 auto 20px auto;
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-title,
+.result-title {
+  color: var(--text-main);
+}

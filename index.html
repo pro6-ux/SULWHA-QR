@@ -1,272 +1,209 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>smart QR</title>
-    <!-- QR 코드를 생성해 주는 오픈소스 라이브러리(qrcode.js)를 불러옵니다 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        /* 기본 스타일 초기화: 브라우저 기본 여백을 없애고 박스 크기 계산을 편하게 합니다 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: #f4f6f9;
-            color: #333;
-            overflow: hidden;
-        }
-
-        /* 1 & 2. 상단 헤더 영역: 로고와 웹사이트 타이틀이 배치됩니다 */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background-color: #ffffff;
-            /* 테두리에 아주 미세한 그림자 효과를 줍니다 */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            z-index: 10;
-        }
-        
-        /* 1. 상단 좌측 로고 스타일 */
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-        .logo-box {
-            font-weight: 800;
-            color: white;
-            font-size: 16px;
-            background-color: #007bff;
-            padding: 6px 12px;
-            border-radius: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        /* 2. 상단 우측 사이트 이름 스타일 */
-        .site-name {
-            font-size: 22px;
-            font-weight: bold;
-            color: #1e293b;
-            letter-spacing: -0.5px;
-        }
-
-        /* 메인 컨텐츠 영역: 화면 중앙 정렬을 위한 컨테이너입니다 */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-        }
-
-        /* 3. 중앙 심플한 URL 입력창 영역 */
-        .input-container {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            max-width: 540px;
-            /* 애니메이션 효과: 입력 완료 시 부드럽게 아래로 내려가도록 설정 */
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        
-        /* 주소 입력란 스타일 */
-        input[type="url"] {
-            flex: 1;
-            padding: 16px 24px;
-            font-size: 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 50px;
-            outline: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            transition: all 0.3s;
-        }
-        /* 입력창을 클릭(포커스)했을 때 은은한 파란색 테두리와 그림자 효과 */
-        input[type="url"]:focus {
-            border-color: #007bff;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
-        }
-        
-        /* 확인 버튼 스타일 */
-        button {
-            padding: 16px 32px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
-            transition: all 0.3s;
-        }
-        /* 버튼에 마우스를 올렸을 때 어두워지며 살짝 위로 뜨는 효과 */
-        button:hover {
-            background-color: #0056b3;
-            transform: translateY(-1px);
-        }
-
-        /* 4. 정중앙 QR코드 출력 영역 (처음에는 보이지 않다가 생성 시 나타남) */
-        #qrcode-wrapper {
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: absolute;
-            top: 35%;
-        }
-        
-        /* 실제 QR코드가 그려지는 흰색 상자 */
-        #qrcode {
-            padding: 20px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        #qrcode:hover {
-            transform: scale(1.03);
-        }
-        
-        /* 5. 다운로드 안내 힌트 텍스트 스타일 */
-        .download-hint {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #64748b;
-            font-weight: 500;
-            background-color: #e2e8f0;
-            padding: 6px 16px;
-            border-radius: 20px;
-            pointer-events: none;
-        }
-
-        /* 4. 확인 버튼 클릭 후 클래스(shifted)가 추가되면 레이아웃이 바뀝니다 */
-        /* 입력창은 아래로 내려가고, QR 코드는 화면에 스르륵 나타납니다 */
-        .shifted .input-container {
-            top: 75%; 
-        }
-        .shifted #qrcode-wrapper {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            pointer-events: auto; 
-        }
-    </style>
+    <title>오늘의 속성 운세 | Elemental Fortune</title>
+    <!-- 구글 폰트 적용 (Outfit 및 Noto Sans KR) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- 커스텀 스타일시트 연결 -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- 1 & 2. 상단 네비게이션 헤더 -->
-    <header>
-        <div class="logo-container">
-            <div class="logo-box">LOGO</div>
-        </div>
-        <div class="site-name">smart QR</div>
-    </header>
+    <!-- 배경에 흐르는 신비로운 오로라/우주 효과 -->
+    <div class="bg-glow"></div>
+    <div class="bg-stars"></div>
 
-    <!-- 메인 내용물 컨테이너 -->
-    <main id="main-content">
-        <!-- 주소 입력창과 확인 버튼 -->
-        <div class="input-container">
-            <input type="url" id="url-input" placeholder="이곳에 URL 주소를 입력하세요 (예: naver.com)" required>
-            <button onclick="generateQR()">확인</button>
-        </div>
+    <!-- 전체 레이아웃 컨테이너 -->
+    <div class="container">
+        <header class="app-header animate-fade-in">
+            <span class="sub-title">MYSTIC ELEMENTAL TAROT</span>
+            <h1 class="main-title">오늘의 속성 운세</h1>
+            <p class="desc-text">우주의 다섯 가지 원소(불, 물, 나무, 땅, 바람) 중 당신의 기운을 선택하여 오늘 하루의 흐름을 점쳐보세요.</p>
+        </header>
 
-        <!-- 생성된 QR 코드가 보여질 자리 (링크로 감싸서 클릭하면 다운로드되게 함) -->
-        <div id="qrcode-wrapper">
-            <a id="download-link" download="smart-qrcode.jpg" title="클릭하면 JPG로 다운로드 됩니다">
-                <div id="qrcode"></div>
-            </a>
-            <div class="download-hint">💡 QR코드를 클릭하면 JPG로 다운로드됩니다.</div>
-        </div>
-    </main>
+        <main class="fortune-box glass-panel">
+            <!-- 1단계: 사용자 정보 입력 폼 -->
+            <section id="step-input" class="form-step active">
+                <h2 class="step-title">1단계. 운명정보 입력</h2>
 
-    <script>
-        // QR코드 객체를 담아둘 변수입니다
-        let qrcode = null;
+                <div class="input-group">
+                    <label for="userName">이름</label>
+                    <input type="text" id="userName" placeholder="이름을 입력해 주세요" autocomplete="off">
+                </div>
 
-        // 확인 버튼을 누르거나 엔터를 치면 실행되는 함수입니다
-        function generateQR() {
-            // 입력창에 적힌 값을 가져와 앞뒤 공백을 제거합니다
-            const urlInput = document.getElementById('url-input').value.trim();
-            
-            // 입력값이 비어있다면 경고창을 띄우고 함수를 종료합니다
-            if (!urlInput) {
-                alert('URL을 입력해주세요!');
-                return;
-            }
+                <div class="input-group">
+                    <label for="userBirth">생년월일</label>
+                    <input type="date" id="userBirth">
+                </div>
 
-            // URL 주소 자동 보정: http:// 또는 https:// 가 안 붙어 있으면 강제로 붙여줍니다
-            let formattedUrl = urlInput;
-            if (!/^https?:\/\//i.test(urlInput)) {
-                formattedUrl = 'https://' + urlInput;
-            }
+                <div class="input-group">
+                    <label>성별</label>
+                    <div class="gender-selector">
+                        <input type="radio" id="gender-male" name="userGender" value="남성" checked>
+                        <label for="gender-male" class="gender-btn">남성</label>
 
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = ''; // 새로 만들기 위해 기존 QR 이미지를 초기화(삭제)합니다
+                        <input type="radio" id="gender-female" name="userGender" value="여성">
+                        <label for="gender-female" class="gender-btn">여성</label>
+                    </div>
+                </div>
 
-            // QR코드를 라이브러리를 사용해 새로 생성합니다
-            qrcode = new QRCode(qrContainer, {
-                text: formattedUrl,       // 변환할 주소
-                width: 240,               // QR 가로 크기
-                height: 240,              // QR 세로 크기
-                colorDark : "#000000",    // 검은색 부분
-                colorLight : "#ffffff",   // 바탕 흰색 부분
-                correctLevel : QRCode.CorrectLevel.H // 오류 복원 레벨 (H가 가장 높음)
-            });
+                <button type="button" class="btn btn-primary" onclick="goToStep(2)">다음 단계로 속성 선택 <span
+                        class="arrow">→</span></button>
+            </section>
 
-            // 5. 다운로드용 투명 배경 PNG 이미지를 흰색 배경의 깨끗한 JPG 이미지로 변환합니다.
-            // QR이 생성되는 속도(브라우저가 렌더링하는 속도)를 고려하여 0.15초 후에 실행합니다.
-            setTimeout(() => {
-                const qrImg = qrContainer.querySelector('img');
-                if (qrImg) {
-                    const downloadLink = document.getElementById('download-link');
-                    const img = new Image();
-                    img.src = qrImg.src;
-                    img.onload = function() {
-                        // 가상의 캔버스(도화지)를 만듭니다 (테두리 여백 +40픽셀 추가)
-                        const canvas = document.createElement('canvas');
-                        canvas.width = img.width + 40; 
-                        canvas.height = img.height + 40;
-                        const ctx = canvas.getContext('2d');
-                        
-                        // 도화지 바탕을 깨끗한 흰색(#ffffff)으로 칠합니다 (안 하면 JPG 변환 시 까맣게 됨)
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        
-                        // 흰색 바탕 위에 QR코드를 중앙(가로 20px, 세로 20px 여백)에 그립니다
-                        ctx.drawImage(img, 20, 20);
-                        
-                        // 완성된 그림판의 결과물을 이미지(JPG) 주소로 변환하여 다운로드 링크에 저장합니다
-                        downloadLink.href = canvas.toDataURL('image/jpeg', 1.0);
-                    };
-                }
-            }, 150);
+            <!-- 2단계: 5대 원소 선택 카드 -->
+            <section id="step-element" class="form-step">
+                <h2 class="step-title">2단계. 수호 속성 선택</h2>
+                <p class="step-desc">오늘 끌리는 자연의 기운을 하나 선택하세요.</p>
 
-            // 4. 입력창을 아래로 내리고 QR을 띄우기 위해 메인 영역에 클래스를 입혀 애니메이션을 실행시킵니다
-            document.getElementById('main-content').classList.add('shifted');
-        }
+                <div class="element-grid">
+                    <!-- 불 카드 -->
+                    <div class="element-card card-fire" onclick="selectElement('🔥 불')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">🔥</div>
+                        <div class="card-name">불 (Fire)</div>
+                        <div class="card-desc">열정, 도전, 그리고 변화의 힘</div>
+                    </div>
 
-        // 키보드로 글자를 입력할 때 엔터키를 치면 '확인' 버튼을 누른 것과 같게 해줍니다
-        document.getElementById('url-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                generateQR();
-            }
-        });
-    </script>
+                    <!-- 물 카드 -->
+                    <div class="element-card card-water" onclick="selectElement('💧 물')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">💧</div>
+                        <div class="card-name">물 (Water)</div>
+                        <div class="card-desc">지혜, 흐름, 그리고 치유의 힘</div>
+                    </div>
+
+                    <!-- 나무 카드 -->
+                    <div class="element-card card-wood" onclick="selectElement('🌳 나무')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">🌳</div>
+                        <div class="card-name">나무 (Wood)</div>
+                        <div class="card-desc">성장, 활력, 그리고 조화의 힘</div>
+                    </div>
+
+                    <!-- 땅 카드 -->
+                    <div class="element-card card-earth" onclick="selectElement('🪨 땅')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">🪨</div>
+                        <div class="card-name">땅 (Earth)</div>
+                        <div class="card-desc">안정, 결실, 그리고 신뢰의 힘</div>
+                    </div>
+
+                    <!-- 바람 카드 -->
+                    <div class="element-card card-wind" onclick="selectElement('💨 바람')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">💨</div>
+                        <div class="card-name">바람 (Wind)</div>
+                        <div class="card-desc">자유, 소통, 그리고 영감의 힘</div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="goToStep(1)">← 이전으로</button>
+            </section>
+
+            <!-- 3단계: 로딩 애니메이션 -->
+            <section id="step-loading" class="form-step text-center">
+                <div class="magic-circle-container">
+                    <div class="magic-circle"></div>
+                    <div class="magic-circle-inner"></div>
+                    <div class="magic-icon">✨</div>
+                </div>
+                <h3 class="loading-title">원소의 공명을 시도하는 중...</h3>
+                <p class="loading-desc">주인님의 수호 속성이 오늘 우주의 흐름을 읽고 있습니다.</p>
+            </section>
+
+            <!-- 4단계: 운세 결과 화면 -->
+            <section id="step-result" class="form-step">
+                <div class="result-header">
+                    <div class="selected-badge" id="res-badge">🔥 불의 기운</div>
+                    <h2 class="result-title"><span id="res-name">홍길동</span>님의 오늘 하루</h2>
+                    <div class="result-date" id="res-date">2026년 7월 20일</div>
+                </div>
+
+                <!-- 핵심 요약 운세 카드 -->
+                <div class="summary-card">
+                    <div class="score-container">
+                        <span class="score-label">종합 운세 지수</span>
+                        <div class="gauge-bar-bg">
+                            <div class="gauge-bar-fill" id="res-gauge" style="width: 85%;"></div>
+                        </div>
+                        <span class="score-num" id="res-score">85%</span>
+                    </div>
+                    <p class="fortune-quote" id="res-quote">"오늘은 새로운 도전과 열정적인 태도가 큰 결실을 맺는 찬란한 하루가 될 것입니다."</p>
+                </div>
+
+                <!-- 상세 운세 영역 (재물, 연애, 성공) -->
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-icon">💰</span>
+                        <div class="detail-info">
+                            <span class="detail-title">재물운</span>
+                            <span class="detail-stars" id="res-star-money">⭐⭐⭐⭐⭐</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">💖</span>
+                        <div class="detail-info">
+                            <span class="detail-title">연애운</span>
+                            <span class="detail-stars" id="res-star-love">⭐⭐⭐⭐</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">💼</span>
+                        <div class="detail-info">
+                            <span class="detail-title">성공운</span>
+                            <span class="detail-stars" id="res-star-success">⭐⭐⭐⭐</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 행운의 팁 박스 -->
+                <div class="lucky-box">
+                    <h3 class="lucky-box-title">🍀 오늘의 행운 가이드</h3>
+                    <div class="lucky-grid">
+                        <div class="lucky-item">
+                            <span class="lucky-label">행운의 색상</span>
+                            <span class="lucky-val" id="res-lucky-color">정열적인 레몬 옐로우</span>
+                        </div>
+                        <div class="lucky-item">
+                            <span class="lucky-label">행운의 아이템</span>
+                            <span class="lucky-val" id="res-lucky-item">에어컨 바람, 손수건</span>
+                        </div>
+                        <div class="lucky-item">
+                            <span class="lucky-label">행운의 시간</span>
+                            <span class="lucky-val" id="res-lucky-time">오후 2시 ~ 4시</span>
+                        </div>
+                        <div class="lucky-item">
+                            <span class="lucky-label">피해야 할 것</span>
+                            <span class="lucky-val" id="res-lucky-avoid">지나친 카페인 섭취</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-actions">
+                    <button type="button" class="btn btn-secondary" onclick="resetFortune(true)">다른 속성 고르기</button>
+                    <button type="button" class="btn btn-primary" onclick="resetFortune(false)">완전히 새로고침</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>© 2026 Elemental Fortune Tarot. All Rights Reserved.</p>
+            <p style="font-size: 11px; opacity: 0.5; margin-top: 5px;">본 서비스는 입력한 개인정보를 서버로 전송하지 않는 안전한 100% 로컬 구동
+                웹사이트입니다.</p>
+        </footer>
+    </div>
+
+    <!-- 커스텀 스크립트 연결 -->
+    <script src="app.js"></script>
 </body>
+
 </html>
