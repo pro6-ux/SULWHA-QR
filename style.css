@@ -1,14 +1,10 @@
-/* style.css */
+/* style.css - 몽환적인 파스텔 핑크 테마 (전체 통합본) */
 
-/* CSS 변수 설정: 파스텔 핑크 & 몽환적인 테마 */
 :root {
   --bg-gradient: linear-gradient(135deg, #fde4ec, #f8bbd0, #e1bee7);
-  /* 부드러운 핑크-라일락 배경 */
   --panel-bg: rgba(255, 255, 255, 0.45);
-  /* 투명한 유리 패널 */
   --panel-border: rgba(255, 255, 255, 0.6);
   --text-main: #5d4037;
-  /* 따뜻하고 부드러운 다크 브라운/플럼 */
   --text-muted: #8d6e63;
   --primary-color: #f48fb1;
   --primary-hover: #f06292;
@@ -19,7 +15,6 @@
   --accent-color: #ce93d8;
 }
 
-/* 기본 초기화 및 폰트 */
 * {
   margin: 0;
   padding: 0;
@@ -38,7 +33,7 @@ body {
   position: relative;
 }
 
-/* 몽환적인 배경 효과 (오로라/빛 번짐) */
+/* 배경 몽환적인 효과 */
 .bg-glow {
   position: fixed;
   top: -20%;
@@ -102,7 +97,6 @@ body {
   font-weight: 700;
   margin-bottom: 0.8rem;
   color: #4a148c;
-  /* 헤더 타이틀에 약간의 깊이감을 주는 보라빛 */
   text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
 }
 
@@ -113,7 +107,7 @@ body {
   word-break: keep-all;
 }
 
-/* 글래스모피즘 패널 (유리 질감) */
+/* 글래스모피즘 패널 */
 .glass-panel {
   background: var(--panel-bg);
   backdrop-filter: blur(16px);
@@ -148,7 +142,7 @@ body {
   }
 }
 
-/* 폼 요소 스타일 */
+/* 1단계 폼 레이아웃 */
 .step-title {
   font-size: 1.3rem;
   font-weight: 600;
@@ -191,7 +185,6 @@ input[type="date"] {
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 input[type="text"]:focus,
@@ -202,11 +195,6 @@ input[type="date"]:focus {
   background: #fff;
 }
 
-input::placeholder {
-  color: #bcaaa4;
-}
-
-/* 성별 선택 버튼 (라디오 커스텀) */
 .gender-selector {
   display: flex;
   gap: 10px;
@@ -236,7 +224,6 @@ input::placeholder {
   box-shadow: 0 4px 15px var(--btn-glow);
 }
 
-/* 버튼 스타일 */
 .btn {
   width: 100%;
   padding: 1.2rem;
@@ -263,81 +250,92 @@ input::placeholder {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px var(--btn-glow);
-  filter: brightness(1.05);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.6);
   color: var(--text-main);
   border: 1px solid var(--panel-border);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
 }
 
-/* 푸터 */
-.app-footer {
-  text-align: center;
-  margin-top: 2rem;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-}
-
-/* 기타 2~4단계에 필요한 기본 스타일 (배경색 등에 맞게 조정) */
+/* 2단계: 카드 그리드 */
 .step-desc {
   color: var(--text-muted);
   margin-bottom: 1.5rem;
+  font-size: 0.95rem;
 }
 
 .element-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   margin-bottom: 1.5rem;
 }
 
 .element-card {
   background: rgba(255, 255, 255, 0.6);
-  border: 1px solid var(--input-border);
+  border: 1px solid var(--panel-border);
   border-radius: 16px;
-  padding: 1.5rem 1rem;
+  padding: 1.2rem 0.8rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .element-card:hover {
-  transform: translateY(-5px);
-  background: #fff;
-  box-shadow: 0 8px 25px rgba(244, 143, 177, 0.2);
+  transform: translateY(-4px);
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(244, 143, 177, 0.25);
   border-color: var(--primary-color);
 }
 
 .card-icon {
   font-size: 2rem;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .card-name {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .card-desc {
   font-size: 0.75rem;
   color: var(--text-muted);
+  line-height: 1.3;
 }
 
-/* 로딩 애니메이션 등 기타 요소들 보정 */
+/* 3단계: 로딩 */
+.text-center {
+  text-align: center;
+}
+
+.magic-circle-container {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: 1.5rem auto;
+}
+
 .magic-circle {
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   border: 3px dashed var(--primary-color);
   border-radius: 50%;
-  margin: 0 auto 20px auto;
-  animation: spin 3s linear infinite;
+  animation: spin 6s linear infinite;
+}
+
+.magic-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
 }
 
 @keyframes spin {
@@ -346,7 +344,169 @@ input::placeholder {
   }
 }
 
-.loading-title,
-.result-title {
+.loading-title {
+  font-size: 1.2rem;
   color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.loading-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* 4단계: 결과 화면 */
+.result-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.selected-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: var(--btn-gradient);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.result-title {
+  font-size: 1.5rem;
+  color: var(--text-main);
+  margin-bottom: 0.3rem;
+}
+
+.result-date {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.score-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.score-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.gauge-bar-bg {
+  flex: 1;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.gauge-bar-fill {
+  height: 100%;
+  background: var(--btn-gradient);
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+
+.score-num {
+  font-weight: 800;
+  color: var(--primary-hover);
+}
+
+.fortune-quote {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--text-main);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 1.2rem;
+}
+
+.detail-item {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  padding: 0.8rem 0.5rem;
+  text-align: center;
+}
+
+.detail-icon {
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detail-title {
+  font-size: 0.75rem;
+  display: block;
+  color: var(--text-muted);
+}
+
+.detail-stars {
+  font-size: 0.75rem;
+}
+
+.lucky-box {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.lucky-box-title {
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-main);
+}
+
+.lucky-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.lucky-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.lucky-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.lucky-val {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.result-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.result-actions .btn {
+  margin-top: 0;
+}
+
+.app-footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
